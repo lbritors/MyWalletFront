@@ -1,49 +1,78 @@
 import styled from "styled-components"
 import { BiExit } from "react-icons/bi"
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from "react-icons/ai"
+import { useContext, useEffect, useState } from "react"
+import { UserContext } from "../UserContext"
+import { Link } from "react-router-dom"
+import ListTransaction from "../components/ListTransaction"
+import axios from "axios"
+import { TransactionContext } from "../TransactionContext"
+
 
 export default function HomePage() {
+  const {user, BASE_URL} = useContext(UserContext);
+  const {setTransaction, transaction} = useContext(TransactionContext);
+  const [lista, setLista] = useState([]);
+
+
+  useEffect(() => {
+
+    const config = {
+      headers: {
+        "Authorization": `Bearer ${user.token}`
+      }
+    }
+    const promise =  axios.get(`${BASE_URL}/home`, config);
+    promise.then((res) => {
+      const novo = res.data;
+      setLista(novo);});
+    promise.catch(err => console.log(err.response.data)) 
+    }, []);
+
+    function saldo() {
+      const total = 0;
+      lista.forEach((l) => {
+        total += l.valor;
+        return total;
+      })
+    }
+    
+    if(lista === undefined) {
+      return <div>Loading...</div>
+    }
+
   return (
     <HomeContainer>
       <Header>
-        <h1>Olá, Fulano</h1>
+        <h1>Olá, {user.nome}</h1>
         <BiExit />
       </Header>
 
       <TransactionsContainer>
         <ul>
-          <ListItemContainer>
-            <div>
-              <span>30/11</span>
-              <strong>Almoço mãe</strong>
-            </div>
-            <Value color={"negativo"}>120,00</Value>
-          </ListItemContainer>
-
-          <ListItemContainer>
-            <div>
-              <span>15/11</span>
-              <strong>Salário</strong>
-            </div>
-            <Value color={"positivo"}>3000,00</Value>
-          </ListItemContainer>
+          {lista.map(l => <ListTransaction key={l._id} descricao={l.descricao} tipo={l.tipo} data={l.data} valor={l.valor}/>)}
+      
         </ul>
 
         <article>
-          <strong>Saldo</strong>
+          <strong>{saldo}</strong>
           <Value color={"positivo"}>2880,00</Value>
         </article>
       </TransactionsContainer>
 
 
       <ButtonsContainer>
-        <button>
+        <button onClick={() => setTransaction("entrada")}>
+          <Link to={`/nova-transacao/${transaction}`}>
           <AiOutlinePlusCircle />
           <p>Nova <br /> entrada</p>
+          </Link>
         </button>
-        <button>
+        <button onClick={() => setTransaction("saida")}>
+          <Link to={`/nova-transacao/${transaction}`}>
           <AiOutlineMinusCircle />
           <p>Nova <br />saída</p>
+          </Link>
         </button>
       </ButtonsContainer>
 
@@ -106,16 +135,4 @@ const Value = styled.div`
   font-size: 16px;
   text-align: right;
   color: ${(props) => (props.color === "positivo" ? "green" : "red")};
-`
-const ListItemContainer = styled.li`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-  color: #000000;
-  margin-right: 10px;
-  div span {
-    color: #c6c6c6;
-    margin-right: 10px;
-  }
 `

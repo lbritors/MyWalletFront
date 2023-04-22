@@ -2,17 +2,19 @@ import styled from "styled-components"
 import { Link, useNavigate } from "react-router-dom"
 import MyWalletLogo from "../components/MyWalletLogo"
 import { useContext, useEffect, useState } from "react";
-import axios from "axios";
 import { UserContext } from "../UserContext";
-import REACT_APP_API_URL from "../constants/REACT_APP_API_URL";
+import axios from "axios";
 
 
 export default function SignInPage() {
 
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
-  const {setUser} = useContext(UserContext);
+  const {setUser, BASE_URL} = useContext(UserContext);
   const navigate = useNavigate();
+
+
+  
   
 
 useEffect(() => {
@@ -25,7 +27,7 @@ useEffect(() => {
 function signIn(e) {
   e.preventDefault();
   const body = {email, senha};
-  const promise = axios.post(`${REACT_APP_API_URL}/`, body)
+  const promise = axios.post(`${BASE_URL}/`, body)
   .then(res => {
     const {nome, email, token} = res.data;
     setUser({nome, email, token});

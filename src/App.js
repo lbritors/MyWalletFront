@@ -6,15 +6,21 @@ import SignUpPage from "./pages/SignUpPage"
 import TransactionsPage from "./pages/TransactionPage"
 import { useState } from "react"
 import { UserContext } from "./UserContext"
+import axios from "axios"
+import { TransactionContext } from "./TransactionContext"
 
 export default function App() {
   const [user, setUser] = useState("");
+  const [transaction, setTransaction] = useState("");
 
+  const BASE_URL = process.env.REACT_APP_API_URL;
 
+ 
   return (
     <PagesContainer>
       <BrowserRouter>
-      <UserContext.Provider value={{user, setUser}}>
+      <TransactionContext.Provider value={{transaction, setTransaction}}>
+      <UserContext.Provider value={{user, setUser, BASE_URL}}>
         <Routes>
           <Route path="/" element={<SignInPage />} />
           <Route path="/cadastro" element={<SignUpPage />} />
@@ -22,6 +28,7 @@ export default function App() {
           <Route path="/nova-transacao/:tipo" element={<TransactionsPage />} />
         </Routes>
         </UserContext.Provider>
+        </TransactionContext.Provider>
       </BrowserRouter>
     </PagesContainer>
   )

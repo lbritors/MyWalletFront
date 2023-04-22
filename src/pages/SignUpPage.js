@@ -1,9 +1,9 @@
 import { Link, useNavigate } from "react-router-dom"
 import styled from "styled-components"
 import MyWalletLogo from "../components/MyWalletLogo"
-import { useState } from "react";
-import REACT_APP_API_URL from "../constants/REACT_APP_API_URL.js";
+import { useContext, useState } from "react";
 import axios from "axios";
+import { UserContext } from "../UserContext";
 
 export default function SignUpPage() {
   const [nome, setNome] = useState("");
@@ -11,6 +11,7 @@ export default function SignUpPage() {
   const [senha, setSenha] = useState("");
   const [confimeSenha, setConfirmeSenha] = useState("");
   const navigate = useNavigate();
+  const {BASE_URL} = useContext(UserContext);
   
   
   function signUp(e) {
@@ -19,7 +20,7 @@ export default function SignUpPage() {
       alert("Senha inválida!");
       return
     }
-    const requisiçao = axios.post(`${REACT_APP_API_URL}/cadastro`, {nome, email, senha})
+    const requisiçao = axios.post(`${BASE_URL}/cadastro`, {nome, email, senha})
     .then(res => navigate("/"))
     .catch(e => console.log(e.response))
   }
