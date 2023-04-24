@@ -11,12 +11,14 @@ import { TransactionContext } from "../TransactionContext"
 
 export default function HomePage() {
   const {user, BASE_URL} = useContext(UserContext);
-  const {setTransaction, transaction} = useContext(TransactionContext);
+  const {setTransaction} = useContext(TransactionContext);
   const [lista, setLista] = useState([]);
+  const [saldo, setSaldo] = useState(0);
+  const [loading, setLoading] = useState(false);
 
 
   useEffect(() => {
-
+    setLoading(true);
     const config = {
       headers: {
         "Authorization": `Bearer ${user.token}`
@@ -25,19 +27,33 @@ export default function HomePage() {
     const promise =  axios.get(`${BASE_URL}/home`, config);
     promise.then((res) => {
       const novo = res.data;
-      setLista(novo);});
-    promise.catch(err => console.log(err.response.data)) 
+      setLista(novo);
+      const money = saldoCalc();
+      setSaldo(money)
+      }
+      );
+    promise.catch(err => console.log(err.response.data));
+      setLoading(false);
     }, []);
 
-    function saldo() {
-      const total = 0;
-      lista.forEach((l) => {
-        total += l.valor;
-        return total;
-      })
+    
+    function saldoCalc() {
+      let soma = 0;
+      for(let i = 0; i < lista.length; i++) {
+        console.log(soma);
+        console.log(lista.tipo)
+        if(lista.tipo === "entrada") {
+          soma += soma;
+        } else {
+          soma -=soma;
+        }
+      }
+      return soma?.toFixed(2).replace(".", ",");
     }
     
-    if(lista === undefined) {
+    console.log(lista.tipo);
+    
+    if(lista.length === 0 || loading === true) {
       return <div>Loading...</div>
     }
 
@@ -55,21 +71,21 @@ export default function HomePage() {
         </ul>
 
         <article>
-          <strong>{saldo}</strong>
-          <Value color={"positivo"}>2880,00</Value>
+          <strong>Saldo</strong>
+          <Value color={saldo >= 0 ? "positivo" : "negativo"}>{saldo}</Value>
         </article>
       </TransactionsContainer>
 
 
       <ButtonsContainer>
         <button onClick={() => setTransaction("entrada")}>
-          <Link to={`/nova-transacao/${transaction}`}>
+          <Link to={`/nova-transacao/entrada`}>
           <AiOutlinePlusCircle />
           <p>Nova <br /> entrada</p>
           </Link>
         </button>
         <button onClick={() => setTransaction("saida")}>
-          <Link to={`/nova-transacao/${transaction}`}>
+          <Link to={`/nova-transacao/saida`}>
           <AiOutlineMinusCircle />
           <p>Nova <br />saída</p>
           </Link>
