@@ -22,7 +22,7 @@ export default function SignUpPage() {
     }
     const requisiçao = axios.post(`${BASE_URL}/cadastro`, {nome, email, senha})
     .then(res => navigate("/"))
-    .catch(e => console.log(e.response))
+    .catch(e => alert(e.response.data))
   }
 
 

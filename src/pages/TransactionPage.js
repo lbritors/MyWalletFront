@@ -25,7 +25,7 @@ export default function TransactionsPage() {
     promise.then((res) => {
       console.log(res.data);
     navigate("/")});
-    promise.catch(err => console.log(err.response.data));
+    promise.catch(err => alert(err.response.data));
   }
 
   return (

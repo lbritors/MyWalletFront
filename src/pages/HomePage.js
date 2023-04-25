@@ -3,7 +3,7 @@ import { BiExit } from "react-icons/bi"
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from "react-icons/ai"
 import { useContext, useEffect, useState } from "react"
 import { UserContext } from "../UserContext"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import ListTransaction from "../components/ListTransaction"
 import axios from "axios"
 import { TransactionContext } from "../TransactionContext"
@@ -15,10 +15,16 @@ export default function HomePage() {
   const [lista, setLista] = useState([]);
   const [saldo, setSaldo] = useState(0);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   console.log("lista",lista);
+  const sessao = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
+    if(!sessao) {
+      alert("Realize o login");
+      navigate("/");
+    }
     setLoading(true);
     const config = {
       headers: {
@@ -54,6 +60,16 @@ export default function HomePage() {
       return soma;
     }
     
+    function logout() {
+      const config = {
+        headers: {
+        "Authorization": `Bearer ${user.token}`
+        }
+      }
+      const promise = axios.delete(`${BASE_URL}`)
+      localStorage.removeItem("user");
+      navigate("/");
+    }
     
     if(lista.length === 0 || loading === true) {
       return <div>Loading...</div>
@@ -64,7 +80,7 @@ export default function HomePage() {
     <HomeContainer>
       <Header>
         <h1>Olá, {user.nome}</h1>
-        <BiExit />
+        <BiExit onClick={logout}/>
       </Header>
 
       <TransactionsContainer>
@@ -81,13 +97,19 @@ export default function HomePage() {
 
 
       <ButtonsContainer>
-        <button onClick={() => setTransaction("entrada")}>
+        <button onClick={() => {if(!sessao) {
+          alert("Realize o login!");
+          navigate("/");
+        }else {setTransaction("entrada")}} }>
           <Link to={`/nova-transacao/entrada`}>
           <AiOutlinePlusCircle />
           <p>Nova <br /> entrada</p>
           </Link>
         </button>
-        <button onClick={() => setTransaction("saida")}>
+        <button onClick={() => {if(!sessao) {
+          alert("Realize o login!");
+          navigate("/");
+        }else {setTransaction("saida")}}}>
           <Link to={`/nova-transacao/saida`}>
           <AiOutlineMinusCircle />
           <p>Nova <br />saída</p>
