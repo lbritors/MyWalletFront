@@ -71,9 +71,7 @@ export default function HomePage() {
       navigate("/");
     }
     
-    if(lista.length === 0 || loading === true) {
-      return <div>Loading...</div>
-    }
+   
 
 
   return (
@@ -85,7 +83,9 @@ export default function HomePage() {
 
       <TransactionsContainer>
         <ul>
-          {lista.map(l => <ListTransaction key={l._id} descricao={l.descricao} tipo={l.tipo} data={l.data} valor={l.valor}/>)}
+          
+          {lista.length === 0 ? <div> <p> Não há nenhum registro de entrada ou saída</p></div> :
+          lista.map(l => <ListTransaction key={l._id} descricao={l.descricao} tipo={l.tipo} data={l.data} valor={l.valor}/>)}
       
         </ul>
 
@@ -144,6 +144,19 @@ const TransactionsContainer = styled.article`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  position: relative;
+  div{ 
+    p {
+    color: #868686;
+    font-size: 20px;
+    line-height: 23px;
+    text-align: center;
+    position: absolute;
+    left: 18px;
+    top: 200px;
+    }
+  }
+ 
   article {
     display: flex;
     justify-content: space-between;   
