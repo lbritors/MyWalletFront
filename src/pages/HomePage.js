@@ -14,7 +14,6 @@ export default function HomePage() {
   const {setTransaction} = useContext(TransactionContext);
   const [lista, setLista] = useState([]);
   const [saldo, setSaldo] = useState(0);
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   console.log("lista",lista);
@@ -25,7 +24,6 @@ export default function HomePage() {
       alert("Realize o login");
       navigate("/");
     }
-    setLoading(true);
     const config = {
       headers: {
         "Authorization": `Bearer ${user.token}`
@@ -36,19 +34,18 @@ export default function HomePage() {
       const novo = res.data;
       console.log("USER",user);
       setLista(novo);
-      const total = saldoCalc();
+      const total = saldoCalc(novo);
       console.log("total",total);
       setSaldo(total)
       }
       );
     promise.catch(err => console.log(err.response.data));
-      setLoading(false);
     }, []);
     console.log("lista",lista);
     
-    function saldoCalc() {
+    function saldoCalc(novaLista) {
       let soma = 0;
-      lista.forEach(l => {
+      novaLista.forEach(l => {
         if(l.tipo === "entrada") {
           soma+= Number(l.valor);
           console.log("soma",soma)
@@ -71,8 +68,6 @@ export default function HomePage() {
       navigate("/");
     }
     
-   
-
 
   return (
     <HomeContainer>
@@ -91,7 +86,7 @@ export default function HomePage() {
 
         <article>
           <strong>Saldo</strong>
-          <Value color={saldo >= 0 ? "positivo" : "negativo"}>{saldo}</Value>
+          <Value color={saldo >= 0 ? "positivo" : "negativo"}>{saldo.toFixed(2).replace(".", ",")}</Value>
         </article>
       </TransactionsContainer>
 
@@ -151,12 +146,9 @@ const TransactionsContainer = styled.article`
     font-size: 20px;
     line-height: 23px;
     text-align: center;
-    position: absolute;
-    left: 18px;
-    top: 200px;
     }
   }
- 
+
   article {
     display: flex;
     justify-content: space-between;   
