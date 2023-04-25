@@ -20,6 +20,7 @@ export default function SignInPage() {
 useEffect(() => {
  const lsUser = JSON.parse(localStorage.getItem("user"));
  if(lsUser !== null) {
+    setUser(lsUser);
     navigate("/home");
  }
 }, []); 

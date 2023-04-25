@@ -16,6 +16,7 @@ export default function HomePage() {
   const [saldo, setSaldo] = useState(0);
   const [loading, setLoading] = useState(false);
 
+  console.log("lista",lista);
 
   useEffect(() => {
     setLoading(true);
@@ -27,35 +28,37 @@ export default function HomePage() {
     const promise =  axios.get(`${BASE_URL}/home`, config);
     promise.then((res) => {
       const novo = res.data;
+      console.log("USER",user);
       setLista(novo);
-      const money = saldoCalc();
-      setSaldo(money)
+      const total = saldoCalc();
+      console.log("total",total);
+      setSaldo(total)
       }
       );
     promise.catch(err => console.log(err.response.data));
       setLoading(false);
     }, []);
-
+    console.log("lista",lista);
     
     function saldoCalc() {
       let soma = 0;
-      for(let i = 0; i < lista.length; i++) {
-        console.log(soma);
-        console.log(lista.tipo)
-        if(lista.tipo === "entrada") {
-          soma += soma;
-        } else {
-          soma -=soma;
+      lista.forEach(l => {
+        if(l.tipo === "entrada") {
+          soma+= Number(l.valor);
+          console.log("soma",soma)
+        }else{
+          soma-= Number(l.valor);
         }
-      }
-      return soma?.toFixed(2).replace(".", ",");
+      });   
+      
+      return soma;
     }
     
-    console.log(lista.tipo);
     
     if(lista.length === 0 || loading === true) {
       return <div>Loading...</div>
     }
+
 
   return (
     <HomeContainer>

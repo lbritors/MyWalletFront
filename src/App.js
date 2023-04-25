@@ -6,7 +6,6 @@ import SignUpPage from "./pages/SignUpPage"
 import TransactionsPage from "./pages/TransactionPage"
 import { useState } from "react"
 import { UserContext } from "./UserContext"
-import axios from "axios"
 import { TransactionContext } from "./TransactionContext"
 
 export default function App() {
