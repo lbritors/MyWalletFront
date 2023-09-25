@@ -18,8 +18,10 @@ It's an application that you can you use to track your expenses.
 
 
 ## How to run
-1- Clone this repository <br>
-2- Clone the back-end repository: https://github.com/lbritors/MyWalletBack <br>
+1- Clone this repository 
+
+2- Clone the back-end repository: https://github.com/lbritors/MyWalletBack 
+
 3- Install dependencies
 ```
 npm install
